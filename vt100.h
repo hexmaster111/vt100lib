@@ -76,4 +76,13 @@ int vt_getcursorpos(VTPTR v, int *rows, int *cols);
  */
 int vt_getwindowsize(VTPTR v, int *rows, int *cols);
 
+typedef struct VT_WRITE_BUFFER
+{
+    char *buf;
+    int len;
+} VT_WB, *VT_WBPTR;
+
+void vtwb_append(VT_WBPTR w, const char *s, int len);
+void vtwb_appendfmt(VT_WBPTR w, const char *fmt, ...);
+void vtwb_free(VT_WBPTR w);
 #endif

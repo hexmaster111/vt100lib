@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <termios.h>
@@ -11,6 +13,33 @@ enum
     OK = 0,
     FAIL = 1
 };
+
+void vtwb_append(VT_WBPTR wb, const char *s, int len)
+{
+    char *new = realloc(wb->buf, wb->len + len);
+
+    if (new == NULL)
+        return;
+
+    memcpy(new + wb->len, s, len);
+    wb->buf = new;
+    wb->len += len;
+}
+
+void vtwb_appendfmt(VT_WBPTR w, const char *fmt, ...)
+{
+    // TODO: I was working here...
+    va_list ap;
+    va_start(ap, fmt);
+    vsnprintf()
+}
+
+void vtwb_free(VT_WBPTR wb)
+{
+    free(wb->buf);
+    wb->buf = NULL;
+    wb->len = 0;
+}
 
 int vt_getcursorpos(VTPTR v, int *rows, int *cols)
 {
