@@ -1,6 +1,8 @@
 #ifndef _VT100_H
 #define _VT100_H
 
+#include <termios.h>
+
 typedef struct VT
 {
     int israw, ifd, ofd;

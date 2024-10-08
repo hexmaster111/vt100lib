@@ -5,6 +5,7 @@
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "vt100.h"
 
@@ -26,12 +27,33 @@ void vtwb_append(VT_WBPTR wb, const char *s, int len)
     wb->len += len;
 }
 
-void vtwb_appendfmt(VT_WBPTR w, const char *fmt, ...)
+void vtwb_appendfmt(VT_WBPTR wb, const char *fmt, ...)
 {
-    // TODO: I was working here...
     va_list ap;
+    int n = 0;
+    size_t size = 0;
+    char *p = NULL;
+
+    /* determin required size */
     va_start(ap, fmt);
-    vsnprintf()
+    n = vsnprintf(p, size, fmt, ap);
+    va_end(ap);
+
+    if (n < 0)
+        return; /* nothing todo, there where no bytes to add */
+
+    size = (size_t)n;
+
+    char *new = realloc(wb->buf, wb->len + size);
+    if (new == NULL)
+        return; /* error getting more space! */
+
+    va_start(ap, fmt);
+    vsnprintf(new + wb->len, size, fmt, ap);
+    va_end(ap);
+
+    wb->len += size;
+    wb->buf = new;
 }
 
 void vtwb_free(VT_WBPTR wb)
